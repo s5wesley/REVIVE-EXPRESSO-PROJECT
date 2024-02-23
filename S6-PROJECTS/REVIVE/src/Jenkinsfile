@@ -33,9 +33,12 @@ pipeline {
                 // Deploy using Docker Compose
                 sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml up -d'
                 
+                // List containers deployed by Docker Compose
+                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml ps'
+                
                 // Retrieve IP address and port
                 script {
-                    def ipAddress = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ui", returnStdout: true).trim()
+                    def ipAddress = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id", returnStdout: true).trim()
                     def port = sh(script: "docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml port ui 80 | cut -d: -f2", returnStdout: true).trim()
                     echo "Application is accessible at: http://${ipAddress}:${port}"
                 }
