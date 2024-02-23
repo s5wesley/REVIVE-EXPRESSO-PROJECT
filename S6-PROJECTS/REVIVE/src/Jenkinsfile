@@ -18,12 +18,12 @@ pipeline {
             steps {
                 script {
                     // Build and push each image
-                    dockerBuildPush('devopseasylearning/revive-ui', '01', './S6-PROJECTS/REVIVE/src/ui')
-                    dockerBuildPush('devopseasylearning/revive-catalog', '01', './S6-PROJECTS/REVIVE/src/catalog')
-                    dockerBuildPush('devopseasylearning/revive-assets', '01', './S6-PROJECTS/REVIVE/src/assets')
-                    dockerBuildPush('devopseasylearning/revive-cart', '01', './S6-PROJECTS/REVIVE/src/cart')
-                    dockerBuildPush('devopseasylearning/revive-checkout', '01', './S6-PROJECTS/REVIVE/src/checkout')
-                    dockerBuildPush('devopseasylearning/revive-orders', '01', './S6-PROJECTS/REVIVE/src/orders')
+                    dockerBuildPush('devopseasylearning/revive-ui', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/ui')
+                    dockerBuildPush('devopseasylearning/revive-catalog', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/catalog')
+                    dockerBuildPush('devopseasylearning/revive-assets', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/assets')
+                    dockerBuildPush('devopseasylearning/revive-cart', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/cart')
+                    dockerBuildPush('devopseasylearning/revive-checkout', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/checkout')
+                    dockerBuildPush('devopseasylearning/revive-orders', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/orders')
                 }
             }
         }
@@ -32,13 +32,6 @@ pipeline {
             steps {
                 // Deploy using Docker Compose
                 sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml up -d'
-            }
-        }
-        
-        stage('Display Application Information') {
-            steps {
-                // Display IP address and node port
-                sh 'echo "Your application is accessible at: http://<your-ip-address>:<your-node-port>"'
             }
         }
     }
