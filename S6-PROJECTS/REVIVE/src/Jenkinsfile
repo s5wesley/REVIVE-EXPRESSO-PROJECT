@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Checkout code from your repository
-                git branch: 'main', credentialsId: 'jenkins-github-key', url: 'https://github.com/s5wesley/REVIVE-EXPRESSO-PROJECT.git'
+                git branch: 'master', credentialsId: 'jenkins-github-key', url: 'https://github.com/s5wesley/REVIVE-EXPRESSO-PROJECT.git'
             }
         }
         
@@ -21,7 +21,7 @@ pipeline {
                     dockerBuildPush('devopseasylearning/revive-ui', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/ui')
                     dockerBuildPush('devopseasylearning/revive-catalog', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/catalog')
                     dockerBuildPush('devopseasylearning/revive-assets', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/assets')
-                    dockerBuildPush('devopseasylearning/revive-cart', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/carts')
+                    dockerBuildPush('devopseasylearning/revive-cart', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/cart')
                     dockerBuildPush('devopseasylearning/revive-checkout', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/checkout')
                     dockerBuildPush('devopseasylearning/revive-orders', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/orders')
                 }
