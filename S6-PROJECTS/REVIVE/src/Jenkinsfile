@@ -16,7 +16,7 @@ pipeline {
                     dockerBuildPush('devopseasylearning/revive-ui', '01', './S6-PROJECTS/REVIVE/src/ui')
                     dockerBuildPush('devopseasylearning/revive-catalog', '01', './S6-PROJECTS/REVIVE/src/catalog')
                     dockerBuildPush('devopseasylearning/revive-assets', '01', './S6-PROJECTS/REVIVE/src/assets')
-                    dockerBuildPush('devopseasylearning/revive-cart', '01', './S6-PROJECTS/REVIVE/src/carts')
+                    dockerBuildPush('devopseasylearning/revive-cart', '01', './S6-PROJECTS/REVIVE/src/cart')
                     dockerBuildPush('devopseasylearning/revive-checkout', '01', './S6-PROJECTS/REVIVE/src/checkout')
                     dockerBuildPush('devopseasylearning/revive-orders', '01', './S6-PROJECTS/REVIVE/src/orders')
                 }
