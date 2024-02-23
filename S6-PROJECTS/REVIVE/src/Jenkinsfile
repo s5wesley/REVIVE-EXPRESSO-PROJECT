@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Checkout code from your repository
+                git branch: 'main', credentialsId: 'jenkins-github-key', url: 'https://github.com/s5wesley/REVIVE-EXPRESSO-PROJECT.git'
+            }
+        }
+        
+        stage('Build and Push Images') {
+            steps {
+                script {
+                    // Build and push each image
+                    dockerBuildPush('devopseasylearning/revive-ui', '01', './S6-PROJECTS/REVIVE/src/ui')
+                    dockerBuildPush('devopseasylearning/revive-catalog', '01', './S6-PROJECTS/REVIVE/src/catalog')
+                    dockerBuildPush('devopseasylearning/revive-assets', '01', './S6-PROJECTS/REVIVE/src/assets')
+                    dockerBuildPush('devopseasylearning/revive-cart', '01', './S6-PROJECTS/REVIVE/src/carts')
+                    dockerBuildPush('devopseasylearning/revive-checkout', '01', './S6-PROJECTS/REVIVE/src/checkout')
+                    dockerBuildPush('devopseasylearning/revive-orders', '01', './S6-PROJECTS/REVIVE/src/orders')
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                // Deploy using Docker Compose
+                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml up -d'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Cleanup
+            sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml down'
+        }
+    }
+}
+
+def dockerBuildPush(imageName, tag, dockerfilePath) {
+    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
+        def customImage = docker.build(imageName + ':' + tag, dockerfilePath)
+        customImage.push()
+    }
+}
