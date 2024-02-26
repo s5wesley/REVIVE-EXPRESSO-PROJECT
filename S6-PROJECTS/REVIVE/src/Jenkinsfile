@@ -1,66 +1,308 @@
-pipeline {
+pipeline{
     agent any
-    
-    environment {
-        // Set COMPOSE_HTTP_TIMEOUT environment variable
-        COMPOSE_HTTP_TIMEOUT = '120'
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '7'))
+        //skipDefaultCheckout(true)
+        disableConcurrentBuilds()
+        timeout (time: 60, unit: 'MINUTES')
+        timestamps()
     }
-    
-    stages {
-        stage('Checkout Code') {
+    // parameters{
+
+    // }
+    // environments{
+
+    // }
+    stages{
+
+        stage('Login') {
+            environment {
+		       DOCKERHUB_CREDENTIALS=credentials('docker-cred ')
+	        }
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+        stage('test ui') {
+            agent {
+             docker {
+               image 'devopseasylearning/maven-revive:v1.0.0'
+               args '-u root:root'
+            }    
+        } 
             steps {
-                // Checkout code from your repository
-                git branch: 'master', credentialsId: 'jenkins-github-key', url: 'https://github.com/s5wesley/REVIVE-EXPRESSO-PROJECT.git'
+                sh '''
+            cd/S6-PROJECTS/REVIVE/src/ui
+            mvn test
+                '''
             }
-        }
         
-        stage('Build and Push Images') {
+        }
+        stage('test catalog') {
+            agent {
+             docker {
+               image 'devopseasylearning/golang02-revive:v1.0.0'
+               args '-u 0:0'
+            }    
+        }
+        steps {
+                sh '''
+            cd/S6-PROJECTS/REVIVE/src/catalog 
+            go test
+                '''
+            }
+        
+    }
+        stage('test cart') {
+            agent {
+             docker {
+               image 'devopseasylearning/maven-revive:v1.0.0'
+               args '-u root:root'
+            }    
+        }
+        steps {
+                sh '''
+            cd/S6-PROJECTS/REVIVE/src/cart
+            mvn test
+                '''
+            }
+        
+    }
+        stage('test orders') {
+            agent {
+             docker {
+               image 'devopseasylearning/maven-revive:v1.0.0'
+               args '-u root:root'
+            }    
+        }
+        steps {
+                sh '''
+            cd/S6-PROJECTS/REVIVE/src/orders
+            mvn test
+                '''
+            }
+        
+    }
+    stage('test checkout') {
+            agent {
+             docker {
+               image 'devopseasylearning/nodejs01-revive:v1.0.0'
+               args '-u root:root'
+            }    
+        }
+        steps {
+                sh '''
+            cd/S6-PROJECTS/REVIVE/src/checkout 
+            npm test
+                '''
+            }
+        
+    }
+    stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Build and push each image
-                    dockerBuildPush('devopseasylearning/revive-ui', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/ui')
-                    dockerBuildPush('devopseasylearning/revive-catalog', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/catalog')
-                    dockerBuildPush('devopseasylearning/revive-assets', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/assets')
-                    dockerBuildPush('devopseasylearning/revive-cart', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/cart')
-                    dockerBuildPush('devopseasylearning/revive-checkout', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/checkout')
-                    dockerBuildPush('devopseasylearning/revive-orders', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/orders')
+                    def mvn = tool 'Maven'
+                    withSonarQubeEnv {
+                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=s5wesley-revive"
+                    }
                 }
             }
         }
-        
-        stage('Deploy') {
-            agent {
-                label 'Jenkins-static-agent'
+               environment {
+        CI = 'true'
+        scannerHome='/opt/sonar-scanner'
+    }
+            steps{
+                withSonarQubeEnv('sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+    stage("Quality Gate") {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+          }
+        stage('Build ui') {
+            steps {
+                sh '''
+                cd $WORKSPACE/S6-PROJECTS/REVIVE/src/ui
+                docker build -t devopseasylearning/revive-ui:${BUILD_NUMBER}.1 .
+                '''
+            }
+        }
+        stage('Build catalog') {
+            steps {
+                sh '''
+                cd $WORKSPACE/S6-PROJECTS/REVIVE/src/catalog
+                docker build -t devopseasylearning/revive-catalog:${BUILD_NUMBER}.1 .
+                docker build -t devopseasylearning/revive-catalog-database:${BUILD_NUMBER}.1 -f Dockerfile-db.
+                '''
+            }
+        }
+        stage('Build cart') {
+            steps {
+                sh '''
+                cd $WORKSPACE/S6-PROJECTS/REVIVE/src/cart
+                docker build -t devopseasylearning/revive-cart:${BUILD_NUMBER}.1 .
+                docker build -t devopseasylearning/revive-cart-database:${BUILD_NUMBER}.1 -f Dockerfile-dynamodb .
+                '''
+            }
+        }
+        stage('Build orders') {
+            steps {
+                sh '''
+                cd $WORKSPACE/S6-PROJECTS/REVIVE/src/orders
+                docker build -t devopseasylearning/revive-orders:${BUILD_NUMBER}.1 .
+                docker build -t devopseasylearning/revive-orders-database:${BUILD_NUMBER}.1 -f Dockerfile-db.
+                docker build -t devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
+                '''
+            }
+        }
+        stage('Build checkout') {
+            steps {
+                sh '''
+                cd $WORKSPACE/S6-PROJECTS/REVIVE/src/checkout
+                docker build -t devopseasylearning/revive-checkout:${BUILD_NUMBER}.1 .
+                docker build -t devopseasylearning/revive-checkout-database:${BUILD_NUMBER}.1 -f Dockerfile-db .
+                '''
+            }
+        }
+        stage('Build assets') {
+            steps {
+                sh '''
+                cd $WORKSPACE/S6-PROJECTS/REVIVEsrc/assets
+                docker build -t devopseasylearning/revive-assets:${BUILD_NUMBER}.1 .
+                '''
+            }
+        }
+        stage('Push ui') {
+            when{ 
+          expression {
+            env.GIT_BRANCH == 'origin/master' }
+
             }
             steps {
-                // Deploy using Docker Compose
-                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml up -d'
-                
-                // List containers deployed by Docker Compose
-                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml ps'
-                
-                // // Retrieve IP address and port
-                // script {
-                //     def ipAddress = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id", returnStdout: true).trim()
-                //     def port = sh(script: "docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml port ui 80 | cut -d: -f2", returnStdout: true).trim()
-                //     echo "Application is accessible at: http://${ipAddress}:${port}"
+                sh '''
+            docker push devopseasylearning/revive-ui:${BUILD_NUMBER}.1
+            docker push devopseasylearning/revive-ui-db:${BUILD_NUMBER}.1
+                '''
+            }
+        }
+        stage('Push catalog') {
+            when{ 
+          expression {
+            env.GIT_BRANCH == 'origin/master' }
+
+            }
+            steps {
+                sh '''
+            docker push devopseasylearning/revive-catalog:${BUILD_NUMBER}.1
+            docker push devopseasylearning/revive-catalog-db:${BUILD_NUMBER}.1
+                '''
+            }
+        }
+        stage('Push cart') {
+            when{ 
+          expression {
+            env.GIT_BRANCH == 'origin/master' }
+
+            }
+            steps {
+                sh '''
+            docker push devopseasylearning/revive-cart:${BUILD_NUMBER}.1
+            docker push devopseasylearning/revive-cart-db:${BUILD_NUMBER}.1
+                '''
+            }
+        }
+        stage('Push orders') {
+            when{ 
+          expression {
+            env.GIT_BRANCH == 'origin/master' }
+
+            }
+            steps {
+                sh '''
+            docker push devopseasylearning/revive-orders:${BUILD_NUMBER}.1
+            docker push devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1
+            docker push devopseasylearning/revive-orders-rabbitmq:${BUILD_NUMBER}.1
+                '''
+            }
+        }
+        stage('Push checkout') {
+            when{ 
+          expression {
+            env.GIT_BRANCH == 'origin/master' }
+
+            }
+            steps {
+                sh '''
+            docker push devopseasylearning/revive-checkout:${BUILD_NUMBER}.1
+            docker push devopseasylearning/revive-checkout-db:${BUILD_NUMBER}.1
+                '''
+            }
+        }
+        stage('Push assets') {
+            when{ 
+          expression {
+            env.GIT_BRANCH == 'origin/master' }
+
+            }
+            steps {
+                sh '''
+            docker push devopseasylearning/revive-assets:${BUILD_NUMBER}.1
+                '''
+            }
+        }
+
+         stage('Notify Slack') {
+            steps {
+                script {
+                    def webhookUrl = 'slack-new'
+                    slackSend(channel: '#devops-team', message: 'Build successful!', webhookUrl: webhookUrl)
                 }
             }
         }
     }
+//     post {
+//         always {
+//         success {
+//             slackSend color: '#2EB67D',
+//             channel: '#group1-s5', 
+//             message: "*Revive Project Build Status*" +
+//             "\n Project Name: Revive" +
+//             "\n Job Name: ${env.JOB_NAME}" +
+//             "\n Build number: ${currentBuild.displayName}" +
+//             "\n Build Status : *SUCCESS*" +
+//             "\n Build url : ${env.BUILD_URL}"
+//         }
+//         failure {
+//             slackSend color: '#E01E5A',
+//             channel: '#group1-s5',  
+//             message: "*Revive Project Build Status*" +
+//             "\n Project Name: Revive" +
+//             "\n Job Name: ${env.JOB_NAME}" +
+//             "\n Build number: ${currentBuild.displayName}" +
+//             "\n Build Status : *FAILED*" +
+//             "\n Build User : *Tia*" +
+//             "\n Action : Please check the console output to fix this job IMMEDIATELY" +
+//             "\n Build url : ${env.BUILD_URL}"
+//         }
+//         unstable {
+//             slackSend color: '#ECB22E',
+//             channel: '#group1-s5', 
+//             message: "*Revive Project Build Status*" +
+//             "\n Project Name: Revive" +
+//             "\n Job Name: ${env.JOB_NAME}" +
+//             "\n Build number: ${currentBuild.displayName}" +
+//             "\n Build Status : *UNSTABLE*" +
+//             "\n Action : Please check the console output to fix this job IMMEDIATELY" +
+//             "\n Build url : ${env.BUILD_URL}"
+//         }   
     
-    post {
-        always {
-            // Cleanup
-            node('Jenkins-static-agent') {
-                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml down'
-            }
-        }
-    }
+//     }
+// }
 
-def dockerBuildPush(imageName, tag, dockerfilePath) {
-    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
-        def customImage = docker.build(imageName + ':' + tag, dockerfilePath)
-        customImage.push()
-    }
-}

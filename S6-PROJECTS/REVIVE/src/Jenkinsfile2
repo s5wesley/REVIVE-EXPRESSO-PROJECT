@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+    
+    environment {
+        // Set COMPOSE_HTTP_TIMEOUT environment variable
+        COMPOSE_HTTP_TIMEOUT = '120'
+    }
+    
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Checkout code from your repository
+                git branch: 'master', credentialsId: 'jenkins-github-key', url: 'https://github.com/s5wesley/REVIVE-EXPRESSO-PROJECT.git'
+            }
+        }
+        
+        stage('Build and Push Images') {
+            steps {
+                script {
+                    // Build and push each image
+                    dockerBuildPush('devopseasylearning/revive-ui', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/ui')
+                    dockerBuildPush('devopseasylearning/revive-catalog', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/catalog')
+                    dockerBuildPush('devopseasylearning/revive-assets', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/assets')
+                    dockerBuildPush('devopseasylearning/revive-cart', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/cart')
+                    dockerBuildPush('devopseasylearning/revive-checkout', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/checkout')
+                    dockerBuildPush('devopseasylearning/revive-orders', "${BUILD_NUMBER}", './S6-PROJECTS/REVIVE/src/orders')
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            agent {
+                label 'Jenkins-static-agent'
+            }
+            steps {
+                // Deploy using Docker Compose
+                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml up -d'
+                
+                // List containers deployed by Docker Compose
+                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml ps'
+                
+                // // Retrieve IP address and port
+                // script {
+                //     def ipAddress = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id", returnStdout: true).trim()
+                //     def port = sh(script: "docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml port ui 80 | cut -d: -f2", returnStdout: true).trim()
+                //     echo "Application is accessible at: http://${ipAddress}:${port}"
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Cleanup
+            node('Jenkins-static-agent') {
+                sh 'docker-compose -f ./S6-PROJECTS/REVIVE/src/docker-compose.yml down'
+            }
+        }
+    }
+
+def dockerBuildPush(imageName, tag, dockerfilePath) {
+    docker.withRegistry('https://registry.hub.docker.com', 'docker-cred') {
+        def customImage = docker.build(imageName + ':' + tag, dockerfilePath)
+        customImage.push()
+    }
+}
