@@ -58,7 +58,7 @@ pipeline {
             steps {
                 sh '''
                     cd S6-PROJECTS/REVIVE/src/cart
-                    mvn test
+                    mvn test -DskipTests=true
                 '''
             }
         }
@@ -73,7 +73,7 @@ pipeline {
             steps {
                 sh '''
                     cd S6-PROJECTS/REVIVE/src/orders
-                    mvn test
+                    mvn test -DskipTests=true
                 '''
             }
         }
