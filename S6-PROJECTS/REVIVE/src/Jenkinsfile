@@ -154,7 +154,7 @@ pipeline {
                     cd $WORKSPACE/S6-PROJECTS/REVIVE/src/orders
                     docker build -t devopseasylearning/revive-orders:${BUILD_NUMBER}.1 .
                     docker build -t devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
-                    docker build -t devopseasylearning/revive-orders-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
+                    docker build -t devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
                 '''
             }
         }
@@ -229,7 +229,7 @@ pipeline {
                 sh '''
                     docker push devopseasylearning/revive-orders:${BUILD_NUMBER}.1
                     docker push devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1
-                    docker push devopseasylearning/revive-orders-rabbitmq:${BUILD_NUMBER}.1
+                    docker push devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1
                 '''
             }
         }
