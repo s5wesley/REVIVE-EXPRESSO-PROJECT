@@ -133,7 +133,7 @@ pipeline {
                 sh '''
                     cd $WORKSPACE/S6-PROJECTS/REVIVE/src/catalog
                     docker build -t devopseasylearning/revive-catalog:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-catalog-database:${BUILD_NUMBER}.1 -f Dockerfile-db .
+                    docker build -t devopseasylearning/revive-catalog-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
                 '''
             }
         }
@@ -143,7 +143,7 @@ pipeline {
                 sh '''
                     cd $WORKSPACE/S6-PROJECTS/REVIVE/src/cart
                     docker build -t devopseasylearning/revive-cart:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-cart-database:${BUILD_NUMBER}.1 -f Dockerfile-dynamodb .
+                    docker build -t devopseasylearning/revive-cart-db:${BUILD_NUMBER}.1 -f Dockerfile-dynamodb .
                 '''
             }
         }
@@ -153,8 +153,8 @@ pipeline {
                 sh '''
                     cd $WORKSPACE/S6-PROJECTS/REVIVE/src/orders
                     docker build -t devopseasylearning/revive-orders:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-orders-database:${BUILD_NUMBER}.1 -f Dockerfile-db .
-                    docker build -t devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
+                    docker build -t devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
+                    docker build -t devopseasylearning/revive-orders-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
                 '''
             }
         }
@@ -164,7 +164,7 @@ pipeline {
                 sh '''
                     cd $WORKSPACE/S6-PROJECTS/REVIVE/src/checkout
                     docker build -t devopseasylearning/revive-checkout:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-checkout-database:${BUILD_NUMBER}.1 -f Dockerfile-db .
+                    docker build -t devopseasylearning/revive-checkout-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
                 '''
             }
         }
