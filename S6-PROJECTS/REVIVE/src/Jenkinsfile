@@ -97,11 +97,12 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.8.4'
-                    args '-u root:root'
+                    args '-u root:root' 
                 }
             }
             steps {
                 sh '''
+                    cd S6-PROJECTS/REVIVE/src/cart \
                     mvn clean verify sonar:sonar \
                       -Dsonar.projectKey=s5wesley-revive \
                       -Dsonar.host.url=https://sonarqube.ektechsoftwaresolution.com \
