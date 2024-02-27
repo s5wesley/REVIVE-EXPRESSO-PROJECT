@@ -96,7 +96,7 @@ pipeline {
         stage('SonarQube analysis') {
             agent {
                 docker {
-                    image 'devopseasylearning/sonar-scanner-revive:v1.0.0'
+                    image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
             }
             environment {
