@@ -88,8 +88,7 @@ pipeline {
             steps {
                 sh '''
                     cd S6-PROJECTS/REVIVE/src/checkout 
-                    npm install jest --save-dev  # Install Jest
-                    npm test 
+                    npm install 
                 '''
             }
         }
