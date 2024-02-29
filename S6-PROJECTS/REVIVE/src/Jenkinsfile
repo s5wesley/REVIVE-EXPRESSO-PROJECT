@@ -426,7 +426,7 @@ networks:
 EOF
                     '''
 
-                    sh "docker-compose -f docker-compose.yaml up -d"
+                    sh 'export COMPOSE_HTTP_TIMEOUT=300 && docker-compose -f docker-compose.yaml up -d'
                     sh "docker-compose ps"
                     
                     def serverUrl = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ui", returnStdout: true).trim()
