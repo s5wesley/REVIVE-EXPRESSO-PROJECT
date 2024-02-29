@@ -241,6 +241,8 @@ pipeline {
         }
 
         stage('Deploy') {
+            agent {
+                label 'Jenkins-static-agent'
             steps {
                 script {
                     sh '''
