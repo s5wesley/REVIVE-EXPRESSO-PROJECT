@@ -49,7 +49,6 @@ services:
     depends_on:
       - catalog-db
 
-
   catalog-db:
     image: mariadb:10.9
     hostname: catalog-db
@@ -63,7 +62,6 @@ services:
     mem_limit: 128m
     networks:
       - s5wesley
-
 
   carts:
     hostname: carts
