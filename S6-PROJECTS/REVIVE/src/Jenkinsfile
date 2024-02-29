@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+      label 'aws-deploy'
+        }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
         disableConcurrentBuilds()
@@ -235,7 +237,9 @@ pipeline {
         // }
 
         stage('Deploy') {
-            agent any
+            agent {
+                label 'prod'
+            }
             steps {
                 script {
                     sh '''
