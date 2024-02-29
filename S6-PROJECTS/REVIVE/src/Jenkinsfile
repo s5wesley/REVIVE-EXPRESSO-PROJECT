@@ -7,12 +7,6 @@ pipeline {
         timestamps()
     }
 
-    // environment {
-    //     DOCKER_COMPOSE_VERSION = '1.29.2' // Set your docker-compose version
-    //     SERVER_URL = 'http://your-server-url'
-    //     SERVER_PORT = '9999' // Update with the appropriate port
-    // }
-
     stages {
         stage('Login') {
             environment {
@@ -243,6 +237,7 @@ pipeline {
         stage('Deploy') {
             agent {
                 label 'Jenkins-static-agent'
+            }
             steps {
                 script {
                     sh '''
