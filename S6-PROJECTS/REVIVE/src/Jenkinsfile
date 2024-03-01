@@ -433,8 +433,9 @@ EOF
                     sh 'sleep 120'
                     sh "docker-compose ps"
                     
-                    def serverUrl = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ui", returnStdout: true).trim()
+                    def serverUrl = sh(script: "docker-compose -f docker-compose.yaml exec ui sh -c \"hostname -i\"", returnStdout: true).trim()
                     echo "Application is running at http://${serverUrl}:9998"
+
                 }
             }
         }
@@ -443,7 +444,7 @@ EOF
             steps {
                 script {
                     slackSend(
-                        channel: '#devops-team', 
+                        channel: '#group1-s5', 
                         message: 'Build successful!', 
                         baseUrl: 'https://devops-easy-learning.slack.com',
                         tokenCredentialId: 'slack-new'
