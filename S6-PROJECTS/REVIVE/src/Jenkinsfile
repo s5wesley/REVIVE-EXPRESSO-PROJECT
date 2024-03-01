@@ -433,8 +433,9 @@ EOF
                     sh 'sleep 120'
                     sh "docker-compose ps"
                     
-                    def serverUrl = sh(script: "docker-compose -f docker-compose.yaml exec ui sh -c \"hostname -i\"", returnStdout: true).trim()
+                    def serverUrl = sh(script: "docker-compose -f docker-compose.yaml exec -T ui sh -c \"hostname -i\"", returnStdout: true).trim()
                     echo "Application is running at http://${serverUrl}:9998"
+
 
                 }
             }
