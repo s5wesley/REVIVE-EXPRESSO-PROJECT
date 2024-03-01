@@ -429,6 +429,7 @@ EOF
                     '''
 
                     sh 'export COMPOSE_HTTP_TIMEOUT=400 && docker-compose -f docker-compose.yaml up -d'
+                    sh 'sleep 120'
                     sh "docker-compose ps"
                     
                     def serverUrl = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ui", returnStdout: true).trim()
