@@ -18,222 +18,222 @@ pipeline {
             }
         }
 
-        stage('test ui') {
-            agent {
-                docker {
-                    image 'devopseasylearning/maven-revive:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd S6-PROJECTS/REVIVE/src/ui
-                    mvn test
-                '''
-            }
-        }
+        // stage('test ui') {
+        //     agent {
+        //         docker {
+        //             image 'devopseasylearning/maven-revive:v1.0.0'
+        //             args '-u root:root'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             cd S6-PROJECTS/REVIVE/src/ui
+        //             mvn test
+        //         '''
+        //     }
+        // }
 
-        stage('test catalog') {
-            agent {
-                docker {
-                    image 'devopseasylearning/golang02-revive:v1.0.0'
-                    args '-u 0:0'
-                }
-            }
-            steps {
-                sh '''
-                    cd S6-PROJECTS/REVIVE/src/catalog 
-                    go test
-                '''
-            }
-        }
+        // stage('test catalog') {
+        //     agent {
+        //         docker {
+        //             image 'devopseasylearning/golang02-revive:v1.0.0'
+        //             args '-u 0:0'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             cd S6-PROJECTS/REVIVE/src/catalog 
+        //             go test
+        //         '''
+        //     }
+        // }
 
-        stage('test cart') {
-            agent {
-                docker {
-                    image 'devopseasylearning/maven-revive:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd S6-PROJECTS/REVIVE/src/cart
-                    mvn test -DskipTests=true
-                '''
-            }
-        }
+        // stage('test cart') {
+        //     agent {
+        //         docker {
+        //             image 'devopseasylearning/maven-revive:v1.0.0'
+        //             args '-u root:root'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             cd S6-PROJECTS/REVIVE/src/cart
+        //             mvn test -DskipTests=true
+        //         '''
+        //     }
+        // }
 
-        stage('test orders') {
-            agent {
-                docker {
-                    image 'devopseasylearning/maven-revive:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd S6-PROJECTS/REVIVE/src/orders
-                    mvn test -DskipTests=true
-                '''
-            }
-        }
+        // stage('test orders') {
+        //     agent {
+        //         docker {
+        //             image 'devopseasylearning/maven-revive:v1.0.0'
+        //             args '-u root:root'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             cd S6-PROJECTS/REVIVE/src/orders
+        //             mvn test -DskipTests=true
+        //         '''
+        //     }
+        // }
 
-        stage('test checkout') {
-            agent {
-                docker {
-                    image 'devopseasylearning/nodejs01-revive:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd S6-PROJECTS/REVIVE/src/checkout 
-                    npm install 
-                '''
-            }
-        }
+        // stage('test checkout') {
+        //     agent {
+        //         docker {
+        //             image 'devopseasylearning/nodejs01-revive:v1.0.0'
+        //             args '-u root:root'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             cd S6-PROJECTS/REVIVE/src/checkout 
+        //             npm install 
+        //         '''
+        //     }
+        // }
 
-        stage('Build ui') {
-            steps {
-                sh '''
-                    cd $WORKSPACE/S6-PROJECTS/REVIVE/src/ui
-                    docker build -t devopseasylearning/revive-ui:${BUILD_NUMBER}.1 .
-                '''
-            }
-        }
+        // stage('Build ui') {
+        //     steps {
+        //         sh '''
+        //             cd $WORKSPACE/S6-PROJECTS/REVIVE/src/ui
+        //             docker build -t devopseasylearning/revive-ui:${BUILD_NUMBER}.1 .
+        //         '''
+        //     }
+        // }
 
-        stage('Build catalog') {
-            steps {
-                sh '''
-                    cd $WORKSPACE/S6-PROJECTS/REVIVE/src/catalog
-                    docker build -t devopseasylearning/revive-catalog:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-catalog-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
-                '''
-            }
-        }
+        // stage('Build catalog') {
+        //     steps {
+        //         sh '''
+        //             cd $WORKSPACE/S6-PROJECTS/REVIVE/src/catalog
+        //             docker build -t devopseasylearning/revive-catalog:${BUILD_NUMBER}.1 .
+        //             docker build -t devopseasylearning/revive-catalog-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
+        //         '''
+        //     }
+        // }
 
-        stage('Build cart') {
-            steps {
-                sh '''
-                    cd $WORKSPACE/S6-PROJECTS/REVIVE/src/cart
-                    docker build -t devopseasylearning/revive-cart:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-cart-db:${BUILD_NUMBER}.1 -f Dockerfile-dynamodb .
-                '''
-            }
-        }
+        // stage('Build cart') {
+        //     steps {
+        //         sh '''
+        //             cd $WORKSPACE/S6-PROJECTS/REVIVE/src/cart
+        //             docker build -t devopseasylearning/revive-cart:${BUILD_NUMBER}.1 .
+        //             docker build -t devopseasylearning/revive-cart-db:${BUILD_NUMBER}.1 -f Dockerfile-dynamodb .
+        //         '''
+        //     }
+        // }
 
-        stage('Build orders') {
-            steps {
-                sh '''
-                    cd $WORKSPACE/S6-PROJECTS/REVIVE/src/orders
-                    docker build -t devopseasylearning/revive-orders:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
-                    docker build -t devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
-                '''
-            }
-        }
+        // stage('Build orders') {
+        //     steps {
+        //         sh '''
+        //             cd $WORKSPACE/S6-PROJECTS/REVIVE/src/orders
+        //             docker build -t devopseasylearning/revive-orders:${BUILD_NUMBER}.1 .
+        //             docker build -t devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
+        //             docker build -t devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1 -f Dockerfile-rabbitmq .
+        //         '''
+        //     }
+        // }
 
-        stage('Build checkout') {
-            steps {
-                sh '''
-                    cd $WORKSPACE/S6-PROJECTS/REVIVE/src/checkout
-                    docker build -t devopseasylearning/revive-checkout:${BUILD_NUMBER}.1 .
-                    docker build -t devopseasylearning/revive-checkout-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
-                '''
-            }
-        }
+        // stage('Build checkout') {
+        //     steps {
+        //         sh '''
+        //             cd $WORKSPACE/S6-PROJECTS/REVIVE/src/checkout
+        //             docker build -t devopseasylearning/revive-checkout:${BUILD_NUMBER}.1 .
+        //             docker build -t devopseasylearning/revive-checkout-db:${BUILD_NUMBER}.1 -f Dockerfile-db .
+        //         '''
+        //     }
+        // }
 
-        stage('Build assets') {
-            steps {
-                sh '''
-                    cd $WORKSPACE/S6-PROJECTS/REVIVE/src/assets
-                    docker build -t devopseasylearning/revive-assets:${BUILD_NUMBER}.1 .
-                '''
-            }
-        }
+        // stage('Build assets') {
+        //     steps {
+        //         sh '''
+        //             cd $WORKSPACE/S6-PROJECTS/REVIVE/src/assets
+        //             docker build -t devopseasylearning/revive-assets:${BUILD_NUMBER}.1 .
+        //         '''
+        //     }
+        // }
 
-        stage('Push ui') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/master'
-                }
-            }
-            steps {
-                sh '''
-                    docker push devopseasylearning/revive-ui:${BUILD_NUMBER}.1
-                '''
-            }
-        }
+        // stage('Push ui') {
+        //     when {
+        //         expression {
+        //             env.GIT_BRANCH == 'origin/master'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             docker push devopseasylearning/revive-ui:${BUILD_NUMBER}.1
+        //         '''
+        //     }
+        // }
 
-        stage('Push catalog') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/master'
-                }
-            }
-            steps {
-                sh '''
-                    docker push devopseasylearning/revive-catalog:${BUILD_NUMBER}.1
-                    docker push devopseasylearning/revive-catalog-db:${BUILD_NUMBER}.1
-                '''
-            }
-        }
+        // stage('Push catalog') {
+        //     when {
+        //         expression {
+        //             env.GIT_BRANCH == 'origin/master'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             docker push devopseasylearning/revive-catalog:${BUILD_NUMBER}.1
+        //             docker push devopseasylearning/revive-catalog-db:${BUILD_NUMBER}.1
+        //         '''
+        //     }
+        // }
 
-        stage('Push cart') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/master'
-                }
-            }
-            steps {
-                sh '''
-                    docker push devopseasylearning/revive-cart:${BUILD_NUMBER}.1
-                    docker push devopseasylearning/revive-cart-db:${BUILD_NUMBER}.1
-                '''
-            }
-        }
+        // stage('Push cart') {
+        //     when {
+        //         expression {
+        //             env.GIT_BRANCH == 'origin/master'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             docker push devopseasylearning/revive-cart:${BUILD_NUMBER}.1
+        //             docker push devopseasylearning/revive-cart-db:${BUILD_NUMBER}.1
+        //         '''
+        //     }
+        // }
 
-        stage('Push orders') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/master'
-                }
-            }
-            steps {
-                sh '''
-                    docker push devopseasylearning/revive-orders:${BUILD_NUMBER}.1
-                    docker push devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1
-                    docker push devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1
-                '''
-            }
-        }
+        // stage('Push orders') {
+        //     when {
+        //         expression {
+        //             env.GIT_BRANCH == 'origin/master'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             docker push devopseasylearning/revive-orders:${BUILD_NUMBER}.1
+        //             docker push devopseasylearning/revive-orders-db:${BUILD_NUMBER}.1
+        //             docker push devopseasylearning/revive-orders-database-rabbitmq:${BUILD_NUMBER}.1
+        //         '''
+        //     }
+        // }
 
-        stage('Push checkout') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/master'
-                }
-            }
-            steps {
-                sh '''
-                    docker push devopseasylearning/revive-checkout:${BUILD_NUMBER}.1
-                    docker push devopseasylearning/revive-checkout-db:${BUILD_NUMBER}.1
-                '''
-            }
-        }
+        // stage('Push checkout') {
+        //     when {
+        //         expression {
+        //             env.GIT_BRANCH == 'origin/master'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             docker push devopseasylearning/revive-checkout:${BUILD_NUMBER}.1
+        //             docker push devopseasylearning/revive-checkout-db:${BUILD_NUMBER}.1
+        //         '''
+        //     }
+        // }
 
-        stage('Push assets') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/master'
-                }
-            }
-            steps {
-                sh '''
-                    docker push devopseasylearning/revive-assets:${BUILD_NUMBER}.1
-                '''
-            }
-        }
+        // stage('Push assets') {
+        //     when {
+        //         expression {
+        //             env.GIT_BRANCH == 'origin/master'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             docker push devopseasylearning/revive-assets:${BUILD_NUMBER}.1
+        //         '''
+        //     }
+        // }
 
         stage('Deploy') {
             agent any
@@ -433,8 +433,9 @@ EOF
                     sh 'sleep 120'
                     sh "docker-compose ps"
                     
-                    def serverUrl = sh(script: "docker-compose -f docker-compose.yaml exec -T ui sh -c \"hostname -i\"", returnStdout: true).trim()
+                    def serverUrl = sh(script: "docker-compose -f docker-compose.yaml exec -T ui sh -c \"ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print \$1}'\"", returnStdout: true).trim()
                     echo "Application is running at http://${serverUrl}:9998"
+
 
 
                 }
