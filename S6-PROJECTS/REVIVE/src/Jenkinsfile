@@ -245,7 +245,7 @@ version: '2.1'
 services:
   ui:
     ports:
-      - 9998:8080
+      - 9999:8080
     environment:
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
       - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
@@ -427,7 +427,8 @@ networks:
     driver: bridge
 EOF
                     '''
-
+                    // Stop existing containers and remove orphans
+                    sh 'docker-compose down --remove-orphans'
                     sh 'export COMPOSE_HTTP_TIMEOUT=400 && docker-compose -f docker-compose.yaml up -d'
                     sh 'sleep 120'
                     sh "docker-compose ps"
