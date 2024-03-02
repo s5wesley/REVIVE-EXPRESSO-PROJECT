@@ -439,6 +439,7 @@ pipeline {
                 }
             }
         }
+    }    
 
    post {
         success {
@@ -466,4 +467,4 @@ pipeline {
             }
         }
     }
- }
+}
