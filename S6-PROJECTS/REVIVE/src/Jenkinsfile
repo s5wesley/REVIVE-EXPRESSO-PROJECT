@@ -242,7 +242,7 @@ pipeline {
                     sh '''
                         cat <<EOF>> docker-compose.yaml
       
-                      version: '3.8'
+                      version: '2.1'
                       services:
                       ui:
                       ports:
