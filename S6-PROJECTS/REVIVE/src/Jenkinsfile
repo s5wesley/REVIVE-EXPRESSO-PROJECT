@@ -440,44 +440,30 @@ pipeline {
             }
         }
 
-        post {
-                 always {
-                        // This block will always run
-                    }
-                    success {
-                        // This block will run if the pipeline is successful
-                        stage('post') {
-                            steps {
-                                script {
-                                    slackSend color: '#2EB67D',
-                                        channel: 'general',
-                                        message: "*Revive Project Build Status*" +
-                                            "\n Project Name: s5wesley-REVIVE" +
-                                            "\n Job Name: ${env.JOB_NAME}" +
-                                            "\n Build number: ${currentBuild.displayName}" +
-                                            "\n Build Status : *SUCCESS*" +
-                                            "\n Build url : ${env.BUILD_URL}"
-                                }
-                            }
-                        }
-                    }
-                    failure {
-                        // This block will run if the pipeline fails
-                        stage('post') {
-                            steps {
-                                script {
-                                    slackSend color: '#E01E5A',
-                                        channel: 'general',
-                                        message: "*Revive Project Build Status*" +
-                                            "\n Project Name: s5wesley-REVIVE" +
-                                            "\n Job Name: ${env.JOB_NAME}" +
-                                            "\n Build number: ${currentBuild.displayName}" +
-                                            "\n Build Status : *FAILED*" +
-                                            "\n Build url : ${env.BUILD_URL}"
-                                }
-                            }
-                        }
-                    }
-                }
+   post {
+        success {
+            script {
+                slackSend color: '#2EB67D',
+                    channel: 'general',
+                    message: "*Revive Project Build Status*" +
+                        "\n Project Name: s5wesley-REVIVE" +
+                        "\n Job Name: ${env.JOB_NAME}" +
+                        "\n Build number: ${currentBuild.displayName}" +
+                        "\n Build Status : *SUCCESS*" +
+                        "\n Build url : ${env.BUILD_URL}"
             }
-}     
+        }
+        failure {
+            script {
+                slackSend color: '#E01E5A',
+                    channel: 'general',
+                    message: "*Revive Project Build Status*" +
+                        "\n Project Name: s5wesley-REVIVE" +
+                        "\n Job Name: ${env.JOB_NAME}" +
+                        "\n Build number: ${currentBuild.displayName}" +
+                        "\n Build Status : *FAILED*" +
+                        "\n Build url : ${env.BUILD_URL}"
+            }
+        }
+    }
+}
