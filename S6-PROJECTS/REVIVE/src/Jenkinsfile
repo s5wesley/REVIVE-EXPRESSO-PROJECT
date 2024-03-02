@@ -457,4 +457,11 @@ EOF
                     message: "*Revive Project Build Status*" +
                         "\n Project Name: s5wesley-REVIVE" +
                         "\n Job Name: ${env.JOB_NAME}" +
-                        "\n Build number:
+                        "\n Build number: ${currentBuild.displayName}" +
+                        "\n Build Status : *FAILED*" +
+                        "\n Build url : ${env.BUILD_URL}"
+                }
+            }
+        }
+    }
+}
