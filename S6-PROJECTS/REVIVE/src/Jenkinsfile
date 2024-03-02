@@ -441,8 +441,7 @@ pipeline {
         }
 
         stage('Post Build') {
-            post {
-                always {
+            steps {
                     script {
                         slackSend color: '#2EB67D',
                         channel: 'general', 
@@ -469,4 +468,3 @@ pipeline {
             }
         }
     }
-}
