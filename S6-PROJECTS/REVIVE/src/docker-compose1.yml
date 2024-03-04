@@ -1,6 +1,4 @@
----
-
-version: '2.1'
+version: '3.1'
 services:
   ui:
     ports:
@@ -16,9 +14,6 @@ services:
     hostname: ui
     image: devopseasylearning/revive-ui:01
     restart: always
-    mem_limit: 512m
-    cap_drop:
-      - ALL
     networks:
       - s5wesley
     depends_on:
@@ -43,9 +38,6 @@ services:
       - DB_CONNECT_TIMEOUT=5
       - PORT=8080
       - DB_PASSWORD=testing
-    mem_limit: 128m
-    cap_drop:
-      - ALL
     networks:
       - s5wesley
     depends_on:
@@ -61,7 +53,6 @@ services:
       - MYSQL_DATABASE=sampledb
       - MYSQL_USER=catalog_user
       - MYSQL_PASSWORD=testing 
-    mem_limit: 128m
     networks:
       - s5wesley
 
@@ -77,9 +68,6 @@ services:
       - CARTS_DYNAMODB_CREATETABLE=true
       - AWS_ACCESS_KEY_ID=key
       - AWS_SECRET_ACCESS_KEY=dummy
-    mem_limit: 256m
-    cap_drop:
-      - ALL
     networks:
       - s5wesley
     depends_on:
@@ -89,7 +77,6 @@ services:
     image: amazon/dynamodb-local:1.20.0
     hostname: carts-db
     restart: always
-    mem_limit: 256m
     networks:
       - s5wesley
 
@@ -105,9 +92,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=orders_user
       - SPRING_DATASOURCE_PASSWORD=testing
       - SPRING_RABBITMQ_HOST=rabbitmq
-    mem_limit: 512m
-    cap_drop:
-      - ALL
     networks:
       - s5wesley
     depends_on:
@@ -119,19 +103,10 @@ services:
     image: postgres:16.1
     hostname: orders-db
     restart: always
-    security_opt: 
-      - no-new-privileges:true
     environment:
-      - reschedule=on-node-failure
       - POSTGRES_PASSWORD=testing
       - POSTGRES_DB=orders
       - POSTGRES_USER=orders_user
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d orders -U orders_user"]
-      interval: 10s
-      timeout: 5s
-      retries: 30
-    mem_limit: 128m
     networks:
       - s5wesley
 
@@ -145,9 +120,6 @@ services:
     environment:
       - REDIS_URL=redis://checkout-redis:6379
       - ENDPOINTS_ORDERS=http://orders:8080
-    mem_limit: 256m
-    cap_drop:
-      - ALL
     networks:
       - s5wesley
     depends_on:
@@ -157,7 +129,6 @@ services:
     image: redis:6-alpine
     hostname: checkout-redis
     restart: always
-    mem_limit: 128m
     networks:
       - s5wesley
 
@@ -167,9 +138,6 @@ services:
       - PORT=8080
     image: devopseasylearning/revive-assets:01
     restart: always
-    mem_limit: 64m
-    cap_drop:
-      - ALL
     networks:
       - s5wesley
 
