@@ -246,7 +246,7 @@ version: '2.1'
 services:
   ui:
     ports:
-      -  "9999:8080"
+    -  "9999:8080"
     environment:
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
       - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
@@ -444,19 +444,19 @@ networks:
         }
     }    
 
-//    post {
-//         success {
-//             script {
-//                 slackSend color: '#2EB67D',
-//                     channel: 'general',
-//                     message: "*Revive Project Build Status*" +
-//                         "\n Project Name: s5wesley-REVIVE" +
-//                         "\n Job Name: ${env.JOB_NAME}" +
-//                         "\n Build number: ${currentBuild.displayName}" +
-//                         "\n Build Status : *SUCCESS*" +
-//                         "\n Build url : ${env.BUILD_URL}"
-//             }
-//         }
+   post {
+        success {
+            script {
+                slackSend color: '#2EB67D',
+                    channel: 'general',
+                    message: "*Revive Project Build Status*" +
+                        "\n Project Name: s5wesley-REVIVE" +
+                        "\n Job Name: ${env.JOB_NAME}" +
+                        "\n Build number: ${currentBuild.displayName}" +
+                        "\n Build Status : *SUCCESS*" +
+                        "\n Build url : ${env.BUILD_URL}"
+            }
+        }
 //         failure {
 //             script {
 //                 slackSend color: '#E01E5A',
@@ -469,5 +469,5 @@ networks:
 //                         "\n Build url : ${env.BUILD_URL}"
 //             }
 //         }
-//     }
+    }
 }
