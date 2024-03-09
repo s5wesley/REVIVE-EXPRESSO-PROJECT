@@ -242,11 +242,11 @@ pipeline {
                     sh '''
                         cat <<EOF>> docker-compose.yaml
       
-version: '2.1'
+version: '2.2'
 services:
   ui:
     ports:
-    -  "9999:8080"
+    -  "9998:8080"
     environment:
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
       - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
