@@ -18,7 +18,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - wesley
     depends_on:
       - catalog
       - carts
@@ -45,7 +45,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - wesley
     depends_on:
       - catalog-db
 
@@ -62,7 +62,7 @@ services:
       - MYSQL_PASSWORD=testing 
     mem_limit: 128m
     networks:
-      - s5wesley
+      - wesley
 
 
   carts:
@@ -81,7 +81,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - wesley
     depends_on:
       - carts-db
 
@@ -91,7 +91,7 @@ services:
     restart: always
     mem_limit: 256m
     networks:
-      - s5wesley
+      - wesley
 
   orders:
     hostname: orders
@@ -109,7 +109,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - wesley
     depends_on:
       - rabbitmq
       - orders-db
@@ -133,7 +133,7 @@ services:
       retries: 30
     mem_limit: 128m
     networks:
-      - s5wesley
+      - wesley
 
   checkout:
     image: devopseasylearning/revive-checkout:01
@@ -149,7 +149,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - wesley
     depends_on:
       - checkout-redis
 
@@ -159,7 +159,7 @@ services:
     restart: always
     mem_limit: 128m
     networks:
-      - s5wesley
+      - wesley
 
   assets:
     hostname: assets
@@ -171,7 +171,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - wesley
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -179,8 +179,8 @@ services:
       - "5999:5672"
       - "15999:15672"
     networks:
-      - s5wesley
+      - wesley
 
 networks: 
- s5wesley:
+ wesley:
      driver: bridge
