@@ -166,7 +166,8 @@ pipeline {
                    withSonarQubeEnv('Sonar') {
                    sh """
                      ${scannerHome}/bin/sonar-scanner \
-                      -Dsonar.projectKey=s5wesley-revive
+                      -Dsonar.projectKey=s5wesley-revive \
+                      -X
                     """
                }
           }
