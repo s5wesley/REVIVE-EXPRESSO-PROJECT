@@ -268,7 +268,7 @@ version: '2.3'
 services:
   ui:
     ports:
-      - 9972:8080
+      - 9973:8080
     environment:
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
       - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
@@ -295,7 +295,7 @@ services:
   catalog:
     hostname: catalog
     ports:
-      - "8082:8080"
+      - "8083:8080"
     image: devopseasylearning/revive-catalog:01
     restart: always
     environment:
@@ -442,8 +442,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5992:5672"
-      - "15992:15672"
+      - "5993:5672"
+      - "15993:15672"
     networks:
       - wesley
 
