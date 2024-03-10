@@ -1,10 +1,8 @@
----
-
-version: '2.1'
+version: '2.3'
 services:
   ui:
     ports:
-      - "9998:8080"
+      - 7777:8080
     environment:
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
       - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
@@ -20,7 +18,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - revive
     depends_on:
       - catalog
       - carts
@@ -47,9 +45,10 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - revive
     depends_on:
       - catalog-db
+
 
   catalog-db:
     image: mariadb:10.9
@@ -60,10 +59,11 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=sampledb
       - MYSQL_USER=catalog_user
-      - MYSQL_PASSWORD=testing 
+      - MYSQL_PASSWORD=testing
     mem_limit: 128m
     networks:
-      - s5wesley
+      - revive
+
 
   carts:
     hostname: carts
@@ -81,7 +81,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - revive
     depends_on:
       - carts-db
 
@@ -91,7 +91,7 @@ services:
     restart: always
     mem_limit: 256m
     networks:
-      - s5wesley
+      - revive
 
   orders:
     hostname: orders
@@ -109,7 +109,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - revive
     depends_on:
       - rabbitmq
       - orders-db
@@ -119,7 +119,7 @@ services:
     image: postgres:16.1
     hostname: orders-db
     restart: always
-    security_opt: 
+    security_opt:
       - no-new-privileges:true
     environment:
       - reschedule=on-node-failure
@@ -133,7 +133,7 @@ services:
       retries: 30
     mem_limit: 128m
     networks:
-      - s5wesley
+      - revive
 
   checkout:
     image: devopseasylearning/revive-checkout:01
@@ -149,7 +149,7 @@ services:
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - revive
     depends_on:
       - checkout-redis
 
@@ -159,28 +159,28 @@ services:
     restart: always
     mem_limit: 128m
     networks:
-      - s5wesley
+      - revive
 
   assets:
     hostname: assets
     environment:
       - PORT=8080
-    image: devopseasylearning/revive-assets:01
+    image: prinsoo/revive-app:assets-v1
     restart: always
     mem_limit: 64m
     cap_drop:
       - ALL
     networks:
-      - s5wesley
+      - revive
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: prinsoo/revive-app:rabbitmq-v1
     ports:
-      - "5999:5672"
+      - "6001:5672"
       - "15999:15672"
     networks:
-      - s5wesley
+      - revive
 
 networks:
-  s5wesley:
+  revive:
     driver: bridge
