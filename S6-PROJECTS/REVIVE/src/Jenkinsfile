@@ -467,29 +467,32 @@ networks:
     }    
 
    post {
-        success {
-            script {
-                slackSend color: '#2EB67D',
-                    channel: 'general',
-                    message: "*Revive Project Build Status*" +
-                        "\n Project Name: s5wesley-REVIVE" +
-                        "\n Job Name: ${env.JOB_NAME}" +
-                        "\n Build number: ${currentBuild.displayName}" +
-                        "\n Build Status : *SUCCESS*" +
-                        "\n Build url : ${env.BUILD_URL}"
-            }
+    success {
+        script {
+            slackSend color: '#2EB67D',
+                channel: 'general',
+                message: "*Revive Project Build Status*" +
+                    "\n Project Name: s5wesley-REVIVE" +
+                    "\n Job Name: ${env.JOB_NAME}" +
+                    "\n Build number: ${currentBuild.displayName}" +
+                    "\n Build Status : *SUCCESS*" +
+                    "\n Build url : ${env.BUILD_URL}"
+            // Add cleanup command
+            sh "sudo find /var/log -type f -mtime +4 -exec rm {} \\;"
         }
-//         failure {
-//             script {
-//                 slackSend color: '#E01E5A',
-//                     channel: 'general',
-//                     message: "*Revive Project Build Status*" +
-//                         "\n Project Name: s5wesley-REVIVE" +
-//                         "\n Job Name: ${env.JOB_NAME}" +
-//                         "\n Build number: ${currentBuild.displayName}" +
-//                         "\n Build Status : *FAILED*" +
-//                         "\n Build url : ${env.BUILD_URL}"
-//             }
-//         }
     }
+    // failure {
+    //     script {
+    //         slackSend color: '#E01E5A',
+    //             channel: 'general',
+    //             message: "*Revive Project Build Status*" +
+    //                 "\n Project Name: s5wesley-REVIVE" +
+    //                 "\n Job Name: ${env.JOB_NAME}" +
+    //                 "\n Build number: ${currentBuild.displayName}" +
+    //                 "\n Build Status : *FAILED*" +
+    //                 "\n Build url : ${env.BUILD_URL}"
+    //     }
+    // }
+  }
+
 }
