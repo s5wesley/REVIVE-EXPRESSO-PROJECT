@@ -443,7 +443,7 @@ services:
     image: rabbitmq:3-management
     ports:
       - "5999:5672"
-      - "15999:15672"
+      - "15997:15672"
     networks:
       - wesley
 
