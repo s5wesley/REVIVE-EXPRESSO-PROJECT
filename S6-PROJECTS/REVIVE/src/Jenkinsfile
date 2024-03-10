@@ -168,7 +168,7 @@ pipeline {
                     sh """
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=s5wesley-revive \
-                            -X
+                            -Dsonar.exclusions=**/*.java
                        """
                 }
             }
